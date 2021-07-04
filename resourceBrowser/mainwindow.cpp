@@ -1,20 +1,20 @@
 #include "mainwindow.h"
 
 #include <QDebug>
-#include "mythread.h"
+#include "file_op_thread.h"
 
 #include "resourcebrowser.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    MyThread *myThread = new MyThread;
+    FileOpThread *myThread = new FileOpThread;
 
-    connect(this, &MainWindow::Sig2Thread, myThread, &MyThread::SlotDoSomething);
+    connect(this, &MainWindow::Sig2Thread, myThread, &FileOpThread::SlotDoSomething/*, Qt::DirectConnection*/);
 
     myThread->SlotDoSomething();
 
-//    emit Sig2Thread();
+    emit Sig2Thread();
 
 
     myThread->start();

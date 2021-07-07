@@ -12,10 +12,10 @@ FileOpThread::FileOpThread(QObject *parent) : QThread(parent)
 void FileOpThread::run()
 {
     QMutexLocker locker(&m_locker);
-    b_can_run = false;
+    b_can_run = true;
+    locker.unlock();
 
     qDebug()<<"fun [run] cur thread id: "<<QThread::currentThread();
-
 
     // 立即退出线程
     QMutexLocker lockerc(&m_locker);

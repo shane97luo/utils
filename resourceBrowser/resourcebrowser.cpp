@@ -13,6 +13,10 @@
 #include <QDebug>
 #include <memory>
 
+#include <QMenuBar>
+#include <QMenu>
+#include <QPushButton>
+
 #include "diroperate.h"
 #include "file_op_thread.h"
 
@@ -38,13 +42,30 @@ ResourceBrowser::~ResourceBrowser()
 
 void ResourceBrowser::InitUI()
 {
-    auto fileSysModel = std::make_unique <QFileSystemModel>(new QFileSystemModel);
-//    QFileSystemModel *fileSysModel = new QFileSystemModel;
+//    auto fileSysModel = std::make_unique <QFileSystemModel>(new QFileSystemModel);
+    QFileSystemModel *fileSysModel = new QFileSystemModel;
     fileSysModel->setRootPath(QString(""));
 
     toolWidget = new QWidget(this);
     toolWidget->setMaximumHeight(70);
     toolWidget->setMinimumHeight(70);
+
+    QMenuBar *menuBar = new QMenuBar(toolWidget);
+    menuBar->setGeometry(200, 10, 60, 30);
+
+    QMenu *mEdit = new QMenu(tr("Edit"), toolWidget);
+    mEdit->setVisible(true);
+    mEdit->addAction(tr("Copy"));
+    mEdit->addAction(tr("Copy to"));
+    mEdit->addAction("Delete");
+    mEdit->addAction("Move to");
+
+    menuBar->addMenu(mEdit);
+
+    QPushButton *btn = new QPushButton(toolWidget);
+    btn->setText("btn1");
+    btn->setGeometry(100, 10, 60, 30);
+
 
     mMainWidget = new QSplitter(this);
 
@@ -62,12 +83,12 @@ void ResourceBrowser::InitUI()
     lay->addWidget(mMainWidget);
     this->setLayout(lay);
 
-    mTableView->setModel(fileSysModel.get());
+    mTableView->setModel(fileSysModel);
     //mTableView->setRootIndex(fileSysModel->index(QDir::currentPath()));
     mTableView->setRootIndex(fileSysModel->index(""));
     mTableView->verticalHeader()->setHidden(true);
 
-    mTreeView->setModel(fileSysModel.get());
+    mTreeView->setModel(fileSysModel);
     mTreeView->setColumnHidden(1, true);
     mTreeView->setColumnHidden(2, true);
     mTreeView->setColumnHidden(3, true);
@@ -77,6 +98,9 @@ void ResourceBrowser::InitUI()
             &ResourceBrowser::SlotEnterTableviewDirCurIndex);
 
     connect(mTreeView, &QTableView::doubleClicked, this,
+            &ResourceBrowser::SlotEnterTableviewDirCurIndex);
+
+    connect(mTableView, &QTableView::doubleClicked, this,
             &ResourceBrowser::SlotEnterTableviewDirCurIndex);
 
     this->resize(1000, 700);
@@ -96,6 +120,10 @@ void ResourceBrowser::SlotEnterTableviewDirCurIndex(const QModelIndex &index)
     QModelIndex firstIndex = index.sibling(index.row(), 0);
 
     QFileSystemModel *fsm = static_cast<QFileSystemModel* >(mTreeView->model());
+
+    qDebug()<<"path"<<firstIndex.data(Qt::DisplayRole);
+    qDebug()<<"path1"<< fsm->filePath(firstIndex);
+
 
     // 选中是目录时，进入，否则不做动作
     if(fsm->isDir(firstIndex))

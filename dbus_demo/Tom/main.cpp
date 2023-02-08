@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 
-#include <cups.h>
-
 #include <QApplication>
 #include <QDebug>
 
@@ -20,16 +18,6 @@
 #include <QDebug>
 #include <QTimer>
 
-void StartProcess()
-{
-    QProcess* process = new QProcess;
-    process->setProgram("/home/shane/untitled/build/untitled_1");
-    //process->setProgram("/home/shane/untitled/build/untitled");
-    process->setArguments(QStringList() << "dsdsjh");
-
-    process->start();
-
-}
 
 int main(int argc, char *argv[])
 {

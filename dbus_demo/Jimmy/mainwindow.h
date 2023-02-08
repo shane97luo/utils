@@ -51,6 +51,11 @@ private slots:
 
     void ActiveEvent(int a);
 
+    int PubEvent(int a);
+
+
+    void SlotSigTry(QString str);
+
 public slots:
     void OnDownloadSlice(int a);
 

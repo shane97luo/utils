@@ -7,8 +7,6 @@
 #include <QTimer>
 #include <QElapsedTimer>
 
-#include <cups.h>
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -53,14 +51,28 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
 
-    QDBusInterface* interface = new QDBusInterface(kPath, kInterface);
+//    QDBusConnection::sessionBus().connect(  ""
+//                                            , kPath
+//                                            , kInterface
+//                                            , kName
+//                                            , this
+//                                            , SLOT(ActiveEvent(int)));
 
-    //    QDBusPendingReply<int> reply = interface.asyncCall(QStringLiteral("checkIn1"));
-    QDBusPendingReply<int> reply = interface->asyncCall(QStringLiteral("checkIn1"));
+    QDBusInterface interface("", kPath, kInterface);
 
-    reply.waitForFinished();
+    if(!interface.isValid())
+    {
+        qWarning() << "Sssdjkljklfkl;";
+    }
+    else {
 
-    qDebug() << "on_pushButton_2_clicked"   << "seconds" << reply.count() << reply.value();
+        //    QDBusPendingReply<int> reply = interface.asyncCall(QStringLiteral("checkIn1"));
+        QDBusReply<int> reply = interface.call("ActiveEvent", 3);
+
+//        reply.waitForFinished();
+        qDebug()<<"seconds: "<< reply.value();
+    }
+    qDebug() << "on_pushButton_2_clicked quit";
 }
 
 void MainWindow::on_pushButton_3_clicked()

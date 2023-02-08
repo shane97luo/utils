@@ -7,7 +7,6 @@
 #include <QTimer>
 #include <QElapsedTimer>
 
-#include <cups.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -34,6 +33,9 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     dbus_connect_.registerObject(kObj1, this, QDBusConnection::ExportAllSlots);
+
+
+    connect(this, &MainWindow::SigTry, this, &MainWindow::SlotSigTry);
 
 }
 
@@ -84,6 +86,17 @@ void MainWindow::ActiveEvent(int a)
 {
     qDebug() << Q_FUNC_INFO << a;
     ui->pushButton->setText(QString::number(a));
+}
+
+int MainWindow::PubEvent(int a)
+{
+    qDebug() << Q_FUNC_INFO << a;
+    return a;
+}
+
+void MainWindow::SlotSigTry(QString str)
+{
+    qDebug() << Q_FUNC_INFO << str;
 }
 
 void MainWindow::OnDownloadSlice(int a)
